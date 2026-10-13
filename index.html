@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111715">
+  <title>龙骨余烬 · 太刀 × 巨戟龙</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="game.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <a class="brand" href="#" aria-label="龙骨余烬主页"><span class="brand-mark">╱</span><span>龙骨余烬<small>ASHEN HUNT</small></span></a>
+      <div class="edition"><span class="status-dot"></span> 可玩原型 <span class="edition-number">VOL. 01</span></div>
+    </header>
+    <section class="intro">
+      <div><div class="eyebrow">LONG SWORD / THE BLACK-OIL DRAGON</div><h1>以一刃，迎巨龙。</h1><p>读懂前摇，把握瞬间。白刃、黄刃、红刃——让每一次反击成为下一刀的起点。</p></div>
+      <div class="intro-tools"><button id="helpButton" class="quiet-button"><span>?</span> 招式手册</button><button id="soundButton" class="quiet-button" aria-pressed="false">♪ 声音关闭</button></div>
+    </section>
+    <section class="arena" id="arena" aria-label="太刀对战巨戟龙游戏">
+      <canvas id="game" width="1600" height="900" tabindex="0" aria-label="游戏画面。A D 移动，空格跳跃，J 轻攻击，K 重攻击，U 气刃，I 看破，O 居合，H 登龙。"></canvas>
+      <div class="arena-grain"></div>
+      <div class="top-hud">
+        <div class="quest-label"><span class="tiny-label">讨伐任务 / ★★★★★</span><strong>龙骨油盆地</strong><span class="quest-line">单人狩猎 · 太刀</span></div>
+        <div class="boss-hud"><div class="boss-name"><span><i></i> 巨戟龙 <small id="phaseLabel">固态龙骨油</small></span><span id="bossPercent">100<span>%</span></span></div><div class="boss-health"><div id="bossHealth"></div></div><div class="boss-caption"><span>GOGMAZIOS</span><span id="bossStatus">巨影正在苏醒</span></div></div>
+        <div class="arena-tools"><span id="timer">00:00</span><button id="pauseButton" title="暂停 P" aria-label="暂停">Ⅱ</button><button id="fullscreenButton" title="全屏 F" aria-label="全屏">⤢</button></div>
+      </div>
+      <div class="announce" id="announce" aria-live="polite"></div>
+      <div class="combat-prompt" id="combatPrompt"></div>
+      <div class="bottom-hud">
+        <div class="hunter-hud"><div class="hunter-name"><span class="hunter-emblem">◇</span><strong>太刀猎人</strong><span id="hpText">200 / 200</span></div><div class="hunter-health"><div id="playerHealth"></div></div><div class="stamina"><div id="playerStamina"></div></div><div class="energy-row"><span>练气</span><div class="energy-track"><div id="playerEnergy"></div></div><span id="energyText">35</span></div><div class="blade-row"><span class="tiny-label">刃之阶</span><div class="blade-pips"><span id="blade0" class="lit">Ⅰ 白</span><span id="blade1">Ⅱ 黄</span><span id="blade2">Ⅲ 红</span></div><strong id="bladeMultiplier">×1.00</strong></div></div>
+        <div class="stance-readout"><span id="actionName">等待拔刀</span><div id="chargeTrack" class="charge-track"><div id="chargeFill"></div></div><span id="chainReadout">J / K 可交替连击</span></div>
+        <div class="objective"><span class="tiny-label">HUNT OBJECTIVE</span><strong id="objectiveText">升至红刃，解放太刀。</strong><span>体长约为猎人身高的 20 倍</span></div>
+      </div>
+      <div class="veil" id="startScreen"><div class="start-copy"><div class="start-eyebrow"><span></span> 龙骨油盆地 · 初次交锋</div><h2>巨影之下<br><em>拔刀。</em></h2><p>长刀在手，捕捉巨戟龙露出的破绽。<br>成功居合免伤升刃，红刃解锁登龙与无双斩。</p><div class="start-actions"><button class="primary-button" id="startButton">开始狩猎 <span>↗</span></button><button class="secondary-button" id="practiceButton">练习模式</button></div><div class="start-note">键盘操作 <span>·</span> 无需安装 <span>·</span> 音效默认关闭</div></div></div>
+      <div class="veil hidden" id="pauseScreen"><div class="pause-copy"><div class="eyebrow">TAKE A BREATH</div><h2>暂歇，蓄势。</h2><p>按 P 或点击下方按钮继续。</p><button class="primary-button" id="resumeButton">继续狩猎 <span>→</span></button></div></div>
+      <div class="veil hidden" id="endScreen"><div class="pause-copy"><div class="eyebrow" id="endEyebrow">QUEST COMPLETE</div><h2 id="endTitle">讨伐完成。</h2><p id="endSummary"></p><button class="primary-button" id="restartButton">再来一场 <span>↻</span></button></div></div>
+      <div class="practice-badge hidden" id="practiceBadge">练习模式 · 生命不减</div>
+    </section>
+    <section class="control-strip" aria-label="键盘操作">
+      <div class="movement"><span><kbd>A</kbd><kbd>D</kbd> 移动</span><span><kbd>空格</kbd> 跳跃</span><span><kbd>Shift</kbd> 回避</span></div>
+      <div class="attack-controls"><span><kbd>J</kbd> 轻斩</span><span><kbd>K</kbd> 重斩</span><span><kbd>U</kbd> 气刃 / 蓄力</span><span><kbd>I</kbd> 看破</span><span><kbd>O</kbd> 纳刀 / 居合</span><span class="red-key"><kbd>H</kbd> 登龙 / 集中</span></div>
+    </section>
+    <section class="field-notes">
+      <article class="note-card"><span class="note-number">01 / FLOW</span><h3>轻重交织，自由三连</h3><p>J 出手快，K 伤害高但需预判。J → K → J 等组合共享三段连击，命中不断积攒练气。</p><div class="note-bottom"><span class="mini-key">J</span><span class="combo-line"></span><span class="mini-key">K</span><span class="combo-line"></span><span class="mini-key">J</span><span class="note-tag">混合连段</span></div></article>
+      <article class="note-card"><span class="note-number">02 / COUNTER</span><h3>后撤看破，纳刀居合</h3><p>普攻后 I 后撤；O 纳刀再 O / U 居合。迎着攻击的瞬间反击，成功免伤、升刃。</p><div class="note-bottom"><span class="counter-dot"></span><span class="window-text">居合判定窗口 0.22 秒</span><span class="note-tag">时机至上</span></div></article>
+      <article class="note-card red-card"><span class="note-number">03 / RELEASE</span><h3>红刃，解放这一刀</h3><p>U 气刃四连 / 长按蓄力大回旋升刃。红刃 H 突刺，U 登龙，落地 U 无双斩，回到白刃。</p><div class="note-bottom"><span class="tier-dot white"></span><span class="tier-arrow">→</span><span class="tier-dot yellow"></span><span class="tier-arrow">→</span><span class="tier-dot red"></span><span class="note-tag">伤害 ×1.85</span></div></article>
+    </section>
+    <footer><span>ASHEN HUNT <span class="footer-slash">/</span> LONG SWORD STUDY</span><span>参考图驱动的非官方同人 Demo <span class="footer-slash">·</span> <button id="resetButton">R 重新开始</button></span></footer>
+  </main>
+  <dialog id="manual"><button class="manual-close" id="closeHelp" aria-label="关闭招式手册">×</button><div class="eyebrow">FIELD MANUAL / 太刀手册</div><h2>每一次开刃，都有迹可循。</h2><p class="manual-intro">白 → 黄 → 红。普通攻击获得练气，气刃招式消耗练气。所有招式均有动作、命中与反击判定。</p><div class="manual-grid"><section><h3>猎人招式</h3><dl><dt>J / K · 混合三连</dt><dd>轻重共享连段序号，可提前输入下一击。红刃 J 变为更快的赤刃斩。</dd><dt>U · 气刃与大回旋</dt><dd>点按气刃Ⅰ → Ⅱ → Ⅲ → 大回旋，末击命中升刃。长按约 1.1 秒，消耗 40 练气直接释放蓄力大回旋。</dd><dt>I · 看破斩</dt><dd>普攻后 1.2 秒内派生。后撤阶段无敌，躲过攻击并回斩命中则升刃、练气回满，可按 U 接大回旋；未成功则练气清空。</dd><dt>O · 特殊纳刀 / 居合</dt><dd>攻击后 O 更快收刀；待「纳刀就绪」，再按 O 或 U 出刀。出刀后 0.03–0.25 秒内接住攻击，免伤并升刃。失败有长后摇，可长按 U 蓄力取消。</dd><dt>H → U → U · 登龙 / 无双斩</dt><dd>红刃 H 突刺命中起跳，空中 U 登龙多段斩；落地 1.3 秒内 U 解放无双斩，霸体并最终降至白刃。突刺落空可 Shift 取消，不降刃。</dd><dt>H · 集中弱点攻击</dt><dd>非红刃消耗 20 练气刺击。连续攻击制造爪部伤口；金色弱点出现时命中升刃。</dd><dt>J + K · 后撤斩</dt><dd>同时按下后跳斩，命中回复大量练气，可继续 U 气刃或 O 纳刀。</dd></dl></section><section><h3>巨戟龙情报</h3><dl><dt>前爪下砸</dt><dd>抬爪后砸地，落点有提示。半血液化阶段连续两次，不要急着出刀。</dd><dt>横扫爪击</dt><dd>压低肩部，横扫身前。看破、回避或跳跃可以处理。</dd><dt>甩尾</dt><dd>身后危险、前摇很短。观察尾部的红色预警，离开扫尾范围。</dd><dt>龙骨油喷射</dt><dd>锁定喷射时的位置形成黑油池，踩油减速。液化阶段喷油后会点火，闪烁油池即将爆炸。</dd><dt>龙车</dt><dd>吼叫蓄势后向前冲撞。长条地面警示表示突进方向。</dd></dl><div class="manual-tip">练习模式仅保护猎人生命，依然保留攻击节奏、硬直与反击判定。P 暂停，R 重开，F 全屏。窗口失焦会自动暂停。</div></section></div></dialog>
+</body>
+</html>
